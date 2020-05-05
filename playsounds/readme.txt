@@ -1,0 +1,1 @@
+This directory contains playsounds in WAV format.

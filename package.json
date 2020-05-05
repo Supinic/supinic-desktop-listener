@@ -1,0 +1,26 @@
+{
+  "name": "supinic-desktop-listener",
+  "version": "1.0.0",
+  "description": "Does various stuff in reaction to HTTP requests sent locally. Works mostly with supibot (supinic/supibot) and its LocalRequest module.",
+  "main": "listener.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Supinic/supinic-desktop-listener.git"
+  },
+  "author": "Supinic",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/Supinic/supinic-desktop-listener/issues"
+  },
+  "homepage": "https://github.com/Supinic/supinic-desktop-listener#readme",
+  "dependencies": {
+    "youtube-dl": "latest",
+    "got": "latest",
+    "audio-play": "latest",
+    "audio-loader": "latest",
+    "get-mp3-duration": "latest"
+  }
+}
