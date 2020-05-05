@@ -1,7 +1,7 @@
 (async function () {
 	"use strict";
 	
-	const url = require('url');
+	const url = require("url");
 	const http = require("http");
 	const AudioPlayer = require("./audio-module.js");
 	const ytdl = require("youtube-dl");
@@ -55,5 +55,4 @@
 
 	app.listen(9999);
 	console.log("Listening...");
-
 })();

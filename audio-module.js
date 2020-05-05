@@ -22,14 +22,12 @@ module.exports = (function () {
 				
 		async playFromURL (urls, volume, limit) {
 			const resp = await Promise.all(urls.map(url => got({
-				url, 
-				// encoding: null 
+				url,
 				responseType: "buffer"
 			})));
 			
 			const duration = resp.reduce((acc, cur) => {
 				const subDuration = getDuration(cur.body);
-				console.log(subDuration);
 				return acc += subDuration;
 			}, 0);			
 			
@@ -53,8 +51,6 @@ module.exports = (function () {
 				"--no-one-instance",
 				stringURLs			
 			];
-			
-			console.log(params.join(" "));
 			
 			await exec(params.join(" "));			
 			return true;
