@@ -1,13 +1,17 @@
 (async function () {
 	"use strict";
 	
+	const qs = require("querystring");
 	const url = require("url");
 	const http = require("http");
 	const AudioPlayer = require("./audio-module.js");
 	const ytdl = require("youtube-dl");
 	const fs = require("fs");
 	
-	const makeTTS = (text, voice = "Brian") => `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${encodeURIComponent(text)}`;
+	const makeTTS = (text, voice = "Brian") => ({
+		url: "https://api.streamelements.com/kappa/v2/speech/",
+		searchParams: qs.stringify({ voice, text })
+	});
 	
 	const audio = await new AudioPlayer();
 		
@@ -20,7 +24,7 @@
 		}
 		else if (parts.query.specialAudio) {			
 			result = await audio.playFromURL(
-				[parts.query.url],
+				[{ url: parts.query.url, searchParams: "" }],
 				Number(parts.query.volume || 4),
 				Number(parts.query.limit || 10000)
 			);

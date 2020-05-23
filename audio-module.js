@@ -20,9 +20,10 @@ module.exports = (function () {
 			play(this.files[filename]);
 		}
 				
-		async playFromURL (urls, volume, limit) {
-			const resp = await Promise.all(urls.map(url => got({
-				url,
+		async playFromURL (list, volume, limit) {			
+			const resp = await Promise.all(list.map(obj => got({
+				url: obj.url,
+				searchParams: obj.searchParams || "",
 				responseType: "buffer"
 			})));
 			
@@ -36,7 +37,7 @@ module.exports = (function () {
 				return false;
 			}
 		
-			const stringURLs = urls.map(i => `"${i}"`).join(" ");
+			const stringURLs = list.map(i => `"${i.url}?${i.searchParams}"`).join(" ");
 			const params = [
 				"vlc",
 				// "--audio-filter normvol",
@@ -51,6 +52,8 @@ module.exports = (function () {
 				"--no-one-instance",
 				stringURLs			
 			];
+			
+			console.log(stringURLs);
 			
 			await exec(params.join(" "));			
 			return true;
