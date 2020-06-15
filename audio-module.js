@@ -13,11 +13,23 @@ module.exports = (function () {
 		}
 		
 		async play (filename) {
-			if (!this.files[filename]) {
-				this.files[filename] = await load("playsounds\\" + filename);
+			try {
+				if (!this.files[filename]) {
+					this.files[filename] = await load("playsounds\\" + filename);
+				}
+				
+				play(this.files[filename]);
+				
+				return {
+					success: true
+				};
 			}
-			
-			play(this.files[filename]);
+			catch (e) {
+				return {
+					success: false,
+					cause: e
+				}
+			};
 		}
 				
 		async playFromURL (list, volume, limit) {			

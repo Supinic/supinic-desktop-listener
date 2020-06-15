@@ -20,7 +20,8 @@
 		let result = "OK";
 		
 		if (parts.query.audio) {
-			audio.play(parts.query.audio);
+			const status = await audio.play(parts.query.audio);
+			result = (status.success) ? "OK" : false;
 		}
 		else if (parts.query.specialAudio) {			
 			result = await audio.playFromURL(
