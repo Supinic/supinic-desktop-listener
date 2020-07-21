@@ -1,7 +1,7 @@
 # supinic-desktop-listener
 Reacts to various `http` requests sent over local network.
 
-This module is created specifically to work with [Supibot's](/Supinic/supibot) `tts` and `playounds` commands.
+This module is created specifically to work with [Supibot's](https://github.com/Supinic/supibot) `tts` and `playounds` commands.
 
 ### Requirements
 - `VLC Media Player`, version 3.0+
@@ -11,7 +11,7 @@ This module is created specifically to work with [Supibot's](/Supinic/supibot) `
 1) The `tts` command is invoked successfully on Supibot.
 2) Supibot initiates a local http request, targetted at e.g. `http://(local-url)/?tts=data&volume=1&limit=30`
 3) This module triggers an event for `audio-module.js` to catch this request.
-4) Audio module creates a new headless, play-and-quit VLC instance to play a request from the [StreamElements](/StreamElements) TTS API.
+4) Audio module creates a new headless, play-and-quit VLC instance to play a request from the [StreamElements](https://github.com/StreamElements) TTS API.
 
 ### Playsound flow
 1) The `ps` command is invoked successfully on Supibot.
