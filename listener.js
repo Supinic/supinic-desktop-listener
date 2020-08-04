@@ -6,15 +6,26 @@
 	const http = require("http");
 	const AudioPlayer = require("./audio-module.js");
 	const ytdl = require("youtube-dl");
-	const fs = require("fs");
-	
-	const makeTTS = (text, voice = "Brian") => ({
-		url: "https://api.streamelements.com/kappa/v2/speech/",
-		searchParams: qs.stringify({ voice, text })
-	});
-	
+
+	const makeGoogleTTS = (text, locale = "en-gb", speed = 1) => {
+		const slicedText = text.slice(0, 200);
+		return {
+			url: "http://translate.google.com/translate_tts",
+			searchParams: qs.stringify({
+				ie: "UTF-8",
+				total: "1",
+				idx: "0",
+				client: "tw-ob",
+				prev: "input",
+				ttsspeed: String(speed),
+				q: slicedText,
+				textlen: slicedText.length,
+				tl: locale
+			})
+		};
+	};
+
 	const audio = await new AudioPlayer();
-		
 	const app = http.createServer(async (req, res) => { 
 		const parts = url.parse(req.url, true);
 		let result = "OK";
@@ -34,7 +45,7 @@
 			const data = JSON.parse(parts.query.tts);
 			
 			result = await audio.playFromURL(
-				data.map(i => makeTTS(i.text, i.voice)),
+				data.map(i => makeGoogleTTS(i.text, i.locale, i.speed)),
 				Number(parts.query.volume || 4),
 				Number(parts.query.limit || 10000)
 			);
