@@ -1,5 +1,4 @@
 module.exports = (function () {
-	const fs = require("fs");
 	const got = require("got");
 	const play = require("audio-play");
 	const load = require("audio-loader");
@@ -28,8 +27,8 @@ module.exports = (function () {
 				return {
 					success: false,
 					cause: e
-				}
-			};
+				};
+			}
 		}
 				
 		async playFromURL (list, volume, limit) {			

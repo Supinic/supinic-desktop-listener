@@ -52,7 +52,7 @@
 		}
 		else if (parts.query.necrodancer) {
 			result = await new Promise((resolve, reject) => {
-				ytdl.exec(parts.query.necrodancer, ["--extract-audio", "--audio-format", "mp3"], {}, (err, output) => {
+				ytdl.exec(parts.query.necrodancer, ["--extract-audio", "--restrict-filenames", "--audio-format", "bestaudio"], {}, (err, output) => {
 					if (err) {
 						reject(err);
 					}
