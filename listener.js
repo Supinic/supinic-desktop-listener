@@ -56,10 +56,14 @@
 			const { link, zone } = JSON.parse(parts.query.necrodancer);
 			const path = require("path").resolve("../necrodancer-custom-music/index.js");
 
-			const res = await shell(`node ${path} ${link} ${zone} --debug`);
-			console.log({ res });
-
-			result = "OK";
+			try {
+				await shell(`node ${path} ${link} ${zone} --debug`);
+				result = "OK";
+			}
+			catch (e) {
+				console.error(e);
+				result = e.message;
+			}
 		}
 		
 		console.log(parts.query, result, String(result));
