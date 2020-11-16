@@ -4,8 +4,10 @@
 	const qs = require("querystring");
 	const url = require("url");
 	const http = require("http");
+	const path = require("path");
 	const AudioPlayer = require("./audio-module.js");
 	const ytdl = require("youtube-dl");
+	const shell = require("util").promisify(require('child_process').exec);
 
 	const makeGoogleTTS = (text, locale = "en-gb", speed = 1) => {
 		const slicedText = text.slice(0, 200);
@@ -51,17 +53,12 @@
 			);
 		}
 		else if (parts.query.necrodancer) {
-			result = await new Promise((resolve, reject) => {
-				ytdl.exec(parts.query.necrodancer, ["--extract-audio", "--restrict-filenames", "--audio-format", "bestaudio"], {}, (err, output) => {
-					if (err) {
-						reject(err);
-					}
-					else {
-						resolve(output);
-					}					
-				});
-			});
-				
+			const { link, zone } = JSON.parse(parts.query.necrodancer);
+			const path = require("path").resolve("../necrodancer-custom-music/index.js");
+
+			const res = await shell(`node ${path} ${link} ${zone} --debug`);
+			console.log({ res });
+
 			result = "OK";
 		}
 		
