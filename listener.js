@@ -4,10 +4,8 @@
 	const qs = require("querystring");
 	const url = require("url");
 	const http = require("http");
-	const path = require("path");
 	const AudioPlayer = require("./audio-module.js");
-	const ytdl = require("youtube-dl");
-	const shell = require("util").promisify(require('child_process').exec);
+	const Necrodancer = require("necrodancer-custom-music");
 
 	const makeGoogleTTS = (text, locale = "en-gb", speed = 1) => {
 		const slicedText = text.slice(0, 200);
@@ -54,10 +52,17 @@
 		}
 		else if (parts.query.necrodancer) {
 			const { link, zone } = JSON.parse(parts.query.necrodancer);
-			const path = require("path").resolve("../necrodancer-custom-music/index.js");
-
 			try {
-				await shell(`node ${path} ${link} ${zone} --debug`);
+				await Necrodancer.fullProcess({
+					gameDir: "C:\\Custom SSD Data\\Steam\\steamapps\\common\\Crypt of the Necrodancer",
+					link,
+					zone,
+					backupSaveFile: false,
+					prepareAllSymlinks: false,
+					forceDownload: false,
+					forceBeatmap: false
+				});
+
 				result = "OK";
 			}
 			catch (e) {

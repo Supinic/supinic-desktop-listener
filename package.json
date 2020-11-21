@@ -21,6 +21,7 @@
     "got": "latest",
     "audio-play": "latest",
     "audio-loader": "latest",
-    "get-mp3-duration": "latest"
+    "get-mp3-duration": "latest",
+    "necrodancer-custom-music": "github:Supinic/necrodancer-custom-music"
   }
 }
