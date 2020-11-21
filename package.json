@@ -17,11 +17,10 @@
   },
   "homepage": "https://github.com/Supinic/supinic-desktop-listener#readme",
   "dependencies": {
-    "youtube-dl": "latest",
-    "got": "latest",
-    "audio-play": "latest",
-    "audio-loader": "latest",
     "get-mp3-duration": "latest",
-    "necrodancer-custom-music": "github:Supinic/necrodancer-custom-music"
+    "got": "latest",
+    "necrodancer-custom-music": "github:Supinic/necrodancer-custom-music",
+    "node-wav-player": "^0.2.0",
+    "youtube-dl": "^3.0.2"
   }
 }

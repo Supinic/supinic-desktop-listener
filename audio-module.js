@@ -1,23 +1,17 @@
 module.exports = (function () {
 	const got = require("got");
-	const play = require("audio-play");
-	const load = require("audio-loader");
+	const Player = require("node-wav-player");
 	const { promisify } = require("util");
 	const exec = promisify(require('child_process').exec);
+
 	const getDuration = require("get-mp3-duration");	
 
 	return class AudioPlayer {
-		constructor () {
-			this.files = {};
-		}
-		
 		async play (filename) {
 			try {
-				if (!this.files[filename]) {
-					this.files[filename] = await load("playsounds\\" + filename);
-				}
-				
-				play(this.files[filename]);
+				await Player.play({
+					path: `.\\playsounds\\${filename}`
+				});
 				
 				return {
 					success: true
