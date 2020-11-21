@@ -7,6 +7,8 @@
 	const AudioPlayer = require("./audio-module.js");
 	const Necrodancer = require("necrodancer-custom-music");
 
+	const necrodancerDirectory = "C:\\Custom SSD Data\\Steam\\steamapps\\common\\Crypt of the Necrodancer";
+
 	const makeGoogleTTS = (text, locale = "en-gb", speed = 1) => {
 		const slicedText = text.slice(0, 200);
 		return {
@@ -51,24 +53,42 @@
 			);
 		}
 		else if (parts.query.necrodancer) {
-			const { link, zone } = JSON.parse(parts.query.necrodancer);
-			try {
-				await Necrodancer.fullProcess({
-					gameDir: "C:\\Custom SSD Data\\Steam\\steamapps\\common\\Crypt of the Necrodancer",
-					link,
-					zone,
-					backupSaveFile: false,
-					prepareAllSymlinks: false,
-					forceDownload: false,
-					forceBeatmap: false
-				});
+			const { command, link, zone } = JSON.parse(parts.query.necrodancer);
+			if (command === "request") {
+				try {
+					await Necrodancer.fullProcess({
+						gameDir: necrodancerDirectory,
+						link,
+						zone,
+						backupSaveFile: false,
+						prepareAllSymlinks: false,
+						forceDownload: false,
+						forceBeatmap: false
+					});
 
-				result = "OK";
+					result = "OK";
+				}
+				catch (e) {
+					console.error(e);
+					result = e.message;
+				}
 			}
-			catch (e) {
-				console.error(e);
-				result = e.message;
+			else if (command === "reset") {
+				const saveFilePath = await Necrodancer.detectSaveFile(necrodancerDirectory);
+				if (!saveFilePath) {
+					throw new Error("No Necrodancer save file?");
+				}
+
+				try {
+					await Necrodancer.resetZones(saveFilePath, ...zone);
+					result = "OK";
+				}
+				catch (e) {
+					console.error(e);
+					result = e.message;
+				}
 			}
+
 		}
 		
 		console.log(parts.query, result, String(result));
