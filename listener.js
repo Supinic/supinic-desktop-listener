@@ -54,8 +54,11 @@
 		}
 		else if (parts.query.necrodancer) {
 			const { command, link, zone } = JSON.parse(parts.query.necrodancer);
+			const saveFilePath = await Necrodancer.detectSaveFile(necrodancerDirectory);
+
 			if (command === "request") {
 				try {
+					await Necrodancer.prepareZoneSymlinks(saveFilePath);
 					await Necrodancer.fullProcess({
 						gameDir: necrodancerDirectory,
 						link,
@@ -74,7 +77,6 @@
 				}
 			}
 			else if (command === "reset") {
-				const saveFilePath = await Necrodancer.detectSaveFile(necrodancerDirectory);
 				if (!saveFilePath) {
 					throw new Error("No Necrodancer save file?");
 				}
