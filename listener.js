@@ -1,6 +1,7 @@
 (async function () {
 	"use strict";
-	
+
+	const fs = require("fs");
 	const qs = require("querystring");
 	const url = require("url");
 	const http = require("http");
@@ -53,13 +54,15 @@
 			);
 		}
 		else if (parts.query.necrodancer) {
+			req.setHeader("Content-Type", "application/json");
 			const { command, link, zone } = JSON.parse(parts.query.necrodancer);
 			const saveFilePath = await Necrodancer.detectSaveFile(necrodancerDirectory);
+			let response = {};
 
 			if (command === "request") {
 				try {
 					await Necrodancer.prepareZoneSymlinks(saveFilePath);
-					await Necrodancer.fullProcess({
+					const data = Necrodancer.fullProcess({
 						gameDir: necrodancerDirectory,
 						link,
 						zone,
@@ -69,28 +72,48 @@
 						forceBeatmap: false
 					});
 
-					result = "OK";
+					const rawBeatMap = await fs.readFile(data.beatmapFile);
+					const beatmap = rawBeatMap.toString()
+						.split("\n")
+						.filter(Boolean)
+						.map(Number);
+
+					const max = Math.max(...beatmap);
+					const bpm = max / beatmap.length;
+
+					response = {
+						success: true,
+						bpm,
+						beatmap
+					};
 				}
 				catch (e) {
 					console.error(e);
-					result = e.message;
+					response = {
+						success: false,
+						error: e,
+						errorMessage: e.message
+					};
 				}
 			}
 			else if (command === "reset") {
-				if (!saveFilePath) {
-					throw new Error("No Necrodancer save file?");
-				}
-
 				try {
-					await Necrodancer.resetZones(saveFilePath, ...zone);
-					result = "OK";
+					await Necrodancer.removeZoneSymlinks(...zone);
+					response = {
+						success: true
+					};
 				}
 				catch (e) {
 					console.error(e);
-					result = e.message;
+					response = {
+						success: false,
+						error: e,
+						errorMessage: e.message
+					};
 				}
 			}
 
+			result = JSON.stringify(response);
 		}
 		
 		console.debug(parts.query, result, String(result));
