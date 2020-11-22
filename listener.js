@@ -93,10 +93,10 @@
 
 		}
 		
-		console.log(parts.query, result, String(result));
+		console.debug(parts.query, result, String(result));
 		res.end(String(result));
 	});
 
 	app.listen(9999);
-	console.log("Listening...");
+	console.log("Desktop listener listening...");
 })();

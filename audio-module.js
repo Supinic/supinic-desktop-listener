@@ -38,7 +38,7 @@ module.exports = (function () {
 			}, 0);			
 			
 			if (duration > limit) {
-				console.log({duration, limit});
+				console.debug({duration, limit});
 				return false;
 			}
 		
@@ -58,7 +58,7 @@ module.exports = (function () {
 				stringURLs			
 			];
 			
-			console.log(stringURLs);
+			console.debug(stringURLs);
 			
 			await exec(params.join(" "));			
 			return true;
