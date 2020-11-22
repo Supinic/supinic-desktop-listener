@@ -1,7 +1,7 @@
 (async function () {
 	"use strict";
 
-	const fs = require("fs");
+	const fs = require("fs").promises;
 	const qs = require("querystring");
 	const url = require("url");
 	const http = require("http");
@@ -63,7 +63,7 @@
 			if (command === "request") {
 				try {
 					await Necrodancer.prepareZoneSymlinks(saveFilePath);
-					const data = Necrodancer.fullProcess({
+					const data = await Necrodancer.fullProcess({
 						gameDir: necrodancerDirectory,
 						link,
 						zone,
@@ -79,13 +79,11 @@
 						.filter(Boolean)
 						.map(Number);
 
-					const max = Math.max(...beatmap);
-					const bpm = max / beatmap.length;
-
+					const max = beatmap[beatmap.length - 1];
 					response = {
 						success: true,
-						bpm,
-						beatmap
+						length: max,
+						beats: beatmap.length
 					};
 				}
 				catch (e) {
