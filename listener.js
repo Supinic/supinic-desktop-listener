@@ -54,7 +54,8 @@
 			);
 		}
 		else if (parts.query.necrodancer) {
-			req.setHeader("Content-Type", "application/json");
+			res.setHeader("Content-Type", "application/json");
+
 			const { command, link, zone } = JSON.parse(parts.query.necrodancer);
 			const saveFilePath = await Necrodancer.detectSaveFile(necrodancerDirectory);
 			let response = {};
