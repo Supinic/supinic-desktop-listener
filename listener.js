@@ -13,7 +13,7 @@
 	const makeGoogleTTS = (text, locale = "en-gb", speed = 1) => {
 		const slicedText = text.slice(0, 200);
 		return {
-			url: "http://translate.google.com/translate_tts",
+			url: "https://translate.google.com/translate_tts",
 			searchParams: qs.stringify({
 				ie: "UTF-8",
 				total: "1",
