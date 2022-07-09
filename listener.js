@@ -1,14 +1,50 @@
 (async function () {
 	"use strict";
 
-	const fs = require("fs").promises;
+	const fs = require("fs/promises");
 	const qs = require("querystring");
 	const url = require("url");
 	const http = require("http");
+	const ytdl = require("youtube-dl-exec");
 	const AudioPlayer = require("./audio-module.js");
-	const Necrodancer = require("necrodancer-custom-music");
+	const { promisify } = require("util");
+	const { exec } = require("child_process");
+	const shell = promisify(exec);
 
-	const necrodancerDirectory = "C:\\Custom SSD Data\\Steam\\steamapps\\common\\Crypt of the Necrodancer";
+	const necrodancerPathPositions = {
+		"1-1": 0,
+		"1-2": 1,
+		"1-3": 2,
+		"2-1": 3,
+		"2-2": 4,
+		"2-3": 5,
+		"3-1": 6,
+		"3-2": 7,
+		"3-3": 8,
+		"4-1": 9,
+		"4-2": 10,
+		"4-3": 11,
+		"5-1": 12,
+		"5-2": 13,
+		"5-3": 14,
+		conga: 15,
+		metal: 16,
+		chess: 17,
+		coral: 18,
+		ringer: 19,
+		necrodancer: 20,
+		necrodancerReturn: 21,
+		lute: 22,
+		mole: 23,
+		frankenstein: 24,
+		conductor: 25,
+		lobby: 26,
+		training: 27,
+		tutorial: 28
+	};
+
+	const essentiaExecutablePath = "C:\\Custom SSD Data\\Steam\\steamapps\\common\\Crypt of the NecroDancer\\data\\essentia\\beattracker.exe";
+	const necrodancerPlaylistPath = "C:\\Custom SSD Data\\Steam\\steamapps\\common\\Crypt of the NecroDancer\\mods\\playlist_76561198037725134_2";
 
 	const makeGoogleTTS = (text, locale = "en-gb", speed = 1) => {
 		const slicedText = text.slice(0, 200);
@@ -57,59 +93,62 @@
 			res.setHeader("Content-Type", "application/json");
 
 			const { command, link, zone } = JSON.parse(parts.query.necrodancer);
-			const saveFilePath = await Necrodancer.detectSaveFile(necrodancerDirectory);
 			let response = {};
 
 			if (command === "request") {
-				try {
-					await Necrodancer.prepareZoneSymlinks(saveFilePath);
-					const data = await Necrodancer.fullProcess({
-						gameDir: necrodancerDirectory,
-						link,
-						zone,
-						backupSaveFile: false,
-						prepareAllSymlinks: false,
-						forceDownload: false,
-						forceBeatmap: false
-					});
+				const { stdout: videoID } = await ytdl.exec(link, {
+					getTitle: true
+				});
 
-					const rawBeatMap = await fs.readFile(data.beatmapFile);
-					const beatmap = rawBeatMap.toString()
-						.split("\n")
-						.filter(Boolean)
-						.map(Number);
+				console.log({ videoID });
 
-					const max = beatmap[beatmap.length - 1];
-					response = {
-						success: true,
-						length: max,
-						beats: beatmap.length
-					};
-				}
-				catch (e) {
-					console.error(e);
-					response = {
-						success: false,
-						error: e,
-						errorMessage: e.message
-					};
-				}
+				const audioFilePath = `C:\\Projects\\Local\\supinic-desktop-listener\\necrodancer-files\\${videoID}.mp3`;
+				console.log({ audioFilePath });
+
+				const data = await ytdl.exec(link, {
+					extractAudio: true,
+					restrictFilenames: true,
+					format: "bestaudio",
+					audioFormat: "mp3",
+					postprocessorArgs: "-ar 44100",
+					output: audioFilePath
+				});
+
+				console.log({ data });
+
+				const zoneIdentifier = `zone${zone.replace("-", "_")}`;
+
+				// if {necrodancerPlaylistPath}/music doesn't exist, make it here
+
+				// if song/beatmap files exist, delete them here
+
+				const beatmapFilePath = `${necrodancerPlaylistPath}\\music\\${zoneIdentifier}.txt`;
+				console.log({ beatmapFilePath });
+				await shell(`"${essentiaExecutablePath}" "${audioFilePath}" "${beatmapFilePath}"`);
+
+				const gameAudioFilePath = `${necrodancerPlaylistPath}\\music\\${zoneIdentifier}.ogg`;
+				console.log({ gameAudioFilePath });
+				await fs.copyFile(audioFilePath, gameAudioFilePath);
+
+				const playlistDefinitionPath = `${necrodancerPlaylistPath}\\playlist.json`;
+				const rawPlaylistDefinition = await fs.readFile(playlistDefinitionPath);
+				const playlistDefinition = JSON.parse(rawPlaylistDefinition);
+
+				const position = necrodancerPathPositions[zone];
+				playlistDefinition.songFileNames[position] = audioFilePath;
+
+				console.log({ playlistDefinition });
+
+				await fs.writeFile(playlistDefinitionPath, JSON.stringify(playlistDefinition));
+
+				response = {
+					success: true,
+					length: 0,
+					beats: 0
+				};
 			}
 			else if (command === "reset") {
-				try {
-					await Necrodancer.removeZoneSymlinks(...zone);
-					response = {
-						success: true
-					};
-				}
-				catch (e) {
-					console.error(e);
-					response = {
-						success: false,
-						error: e,
-						errorMessage: e.message
-					};
-				}
+
 			}
 
 			result = JSON.stringify(response);

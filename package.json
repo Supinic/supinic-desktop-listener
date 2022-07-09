@@ -19,8 +19,7 @@
   "homepage": "https://github.com/Supinic/supinic-desktop-listener#readme",
   "dependencies": {
     "get-mp3-duration": "latest",
-    "got": "latest",
-    "necrodancer-custom-music": "github:Supinic/necrodancer-custom-music",
-    "youtube-dl": "^3.5.0"
+    "got": "^10.0.0",
+    "youtube-dl-exec": "^2.1.0"
   }
 }
