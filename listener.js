@@ -28,25 +28,25 @@
 		};
 	};
 
-	const audio = await new AudioPlayer();
-	const app = http.createServer(async (req, res) => { 
+	const audio = new AudioPlayer();
+	const app = http.createServer(async (req, res) => {
 		const parts = url.parse(req.url, true);
 		let result = "OK";
-		
+
 		if (parts.query.audio) {
 			const status = await audio.play(parts.query.audio);
 			result = (status.success) ? "OK" : false;
 		}
-		else if (parts.query.specialAudio) {			
+		else if (parts.query.specialAudio) {
 			result = await audio.playFromURL(
 				[{ url: parts.query.url, searchParams: "" }],
 				Number(parts.query.volume || 4),
 				Number(parts.query.limit || 10000)
 			);
-		}	
+		}
 		else if (parts.query.tts) {
 			const data = JSON.parse(parts.query.tts);
-			
+
 			result = await audio.playFromURL(
 				data.map(i => makeGoogleTTS(i.text, i.locale, i.speed)),
 				Number(parts.query.volume || 4),
@@ -114,7 +114,7 @@
 
 			result = JSON.stringify(response);
 		}
-		
+
 		console.debug(parts.query, result, String(result));
 		res.end(String(result));
 	});
