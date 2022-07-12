@@ -11,6 +11,20 @@
 	const { exec } = require("child_process");
 	const shell = promisify(exec);
 
+	const bossIndex = {
+		conga: 1,
+		metal: 2,
+		chess: 3,
+		coral: 4,
+		ringer: 5,
+		necrodancer: 6,
+		necrodancerReturn: 7,
+		lute: 8,
+		mole: 9,
+		frankenstein: 10,
+		conductor: 11
+	};
+
 	const necrodancerPathPositions = {
 		"1-1": 0,
 		"1-2": 1,
@@ -96,11 +110,13 @@
 			let response = {};
 
 			if (command === "request") {
-				const { stdout: videoID } = await ytdl.exec(link, {
+				const { stdout: videoName } = await ytdl.exec(link, {
 					getTitle: true
 				});
 
-				console.log({ videoID });
+				const { stdout: videoID } = await ytdl.exec(link, {
+					getId: true
+				});
 
 				const audioFilePath = `C:\\Projects\\Local\\supinic-desktop-listener\\necrodancer-files\\${videoID}.mp3`;
 				console.log({ audioFilePath });
@@ -116,7 +132,9 @@
 
 				console.log({ data });
 
-				const zoneIdentifier = `zone${zone.replace("-", "_")}`;
+				const zoneIdentifier = (bossIndex[zone])
+					? `boss_${bossIndex[zone]}`
+					: `zone${zone.replace("-", "_")}`;
 
 				// if {necrodancerPlaylistPath}/music doesn't exist, make it here
 
@@ -124,7 +142,15 @@
 
 				const beatmapFilePath = `${necrodancerPlaylistPath}\\music\\${zoneIdentifier}.txt`;
 				console.log({ beatmapFilePath });
-				await shell(`"${essentiaExecutablePath}" "${audioFilePath}" "${beatmapFilePath}"`);
+				try {
+					await shell(`"${essentiaExecutablePath}" "${audioFilePath}" "${beatmapFilePath}"`);
+				}
+				catch (e) {
+					console.warn("Essentia error", e);
+
+					const errorResult =  JSON.stringify({ success: false, reason: "essentiar-error" });
+					return res.end(String(errorResult));
+				}
 
 				const gameAudioFilePath = `${necrodancerPlaylistPath}\\music\\${zoneIdentifier}.ogg`;
 				console.log({ gameAudioFilePath });
@@ -134,8 +160,9 @@
 				const rawPlaylistDefinition = await fs.readFile(playlistDefinitionPath);
 				const playlistDefinition = JSON.parse(rawPlaylistDefinition);
 
+				const fakeAudioFilePath = `C:\\Projects\\Local\\supinic-desktop-listener\\necrodancer-files\\${videoName}.mp3`;
 				const position = necrodancerPathPositions[zone];
-				playlistDefinition.songFileNames[position] = audioFilePath;
+				playlistDefinition.songFileNames[position] = fakeAudioFilePath;
 
 				console.log({ playlistDefinition });
 
