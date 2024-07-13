@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = (function () {
 	const got = require("got");
 	// const Player = require("node-wav-player");
@@ -8,6 +10,7 @@ module.exports = (function () {
 
 	return class AudioPlayer {
 		async play (filename) {
+			const playsoundPath = path.join(".", "playsounds", filename);
 			try {
 				const params = [
 					"vlc",
@@ -17,11 +20,11 @@ module.exports = (function () {
 					"--no-volume-save",
 					//"--waveout-volume=0.05",
 					//"--waveout-volume=" + volume,
-					"--gain=0.375",
+					"--gain=1.5",
 					//"--gain=8",
 					"--play-and-exit",
 					"--no-one-instance",
-					`.\\playsounds\\${filename}`
+					playsoundPath
 				];
 
 				await exec(params.join(" "));
