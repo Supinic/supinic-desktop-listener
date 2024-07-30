@@ -4,7 +4,8 @@
   "description": "Does various stuff in reaction to HTTP requests sent locally. Works mostly with supibot (supinic/supibot) and its LocalRequest module.",
   "main": "listener.js",
   "scripts": {
-    "start": "node listener.js",
+    "build": "tsc",
+    "start": "tsc && node build/listener.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,5 +23,8 @@
     "got": "^10.0.0",
     "youtube-dl-exec": "^2.1.0"
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.3.1",
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
 }
