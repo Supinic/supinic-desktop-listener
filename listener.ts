@@ -92,19 +92,20 @@ const app = http.createServer(async (req, res) => {
 	const parts = url.parse(req.url!, true);
 	let result = "OK";
 
-	if (typeof parts.query.audio == "string") {
+	if (typeof parts.query.audio === "string") {
+		console.log(`playing audio from ${parts.query.audio}`);
 		const status = await audio.play(parts.query.audio);
 		result = (status.success) ? "OK" : String(false);
 	}
 	else if (parts.query.specialAudio) {
 		const url = parts.query.url;
 		result = String(await audio.playFromURL(
-			[{ url: typeof url == "string" ? url : "", searchParams: "" }],
+			[{ url: typeof url === "string" ? url : "", searchParams: "" }],
 			Number(parts.query.volume || 4),
 			Number(parts.query.limit || 10000)
 		));
 	}
-	else if (typeof parts.query.tts == "string") {
+	else if (typeof parts.query.tts === "string") {
 		const data: Array<TTSRequest> = JSON.parse(parts.query.tts);
 
 		result = String(await audio.playFromURL(
