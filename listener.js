@@ -6,7 +6,10 @@
 	const url = require("url");
 	const http = require("http");
 	const ytdl = require("youtube-dl-exec");
+
 	const AudioPlayer = require("./audio-module.js");
+	const DesktopEffects = require("./desktop-effects.js");
+
 	const { promisify } = require("util");
 	const { exec } = require("child_process");
 	const shell = promisify(exec);
@@ -180,8 +183,15 @@
 
 			result = JSON.stringify(response);
 		}
+		else if (parts.query.desktopEffect) {
+			res.setHeader("Content-Type", "application/json");
 
-		console.debug(parts.query, result, String(result));
+			const { action, effect, data } = parts.query;
+			const effectResult = await DesktopEffects.execute(effect, action, data);
+
+			result = JSON.stringify(effectResult);
+		}
+
 		res.end(String(result));
 	});
 

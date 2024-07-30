@@ -2,3 +2,4 @@ node_modules
 playsounds/*.wav
 .idea
 necrodancer-files
+.yarn
