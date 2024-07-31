@@ -8,8 +8,10 @@ const DBUS_COMMAND = {
 	toggle: "toggleEffect",
 	check: "isEffectLoaded"
 };
-const createCommand = (effect, action) => `dbus-send --print-reply --dest=org.kde.KWin /Effects org.kde.kwin.Effects.${action} string:"${effect}"`;
-const runCommand = async (effect, action) => {
+export type CommandKey = keyof typeof DBUS_COMMAND;
+
+const createCommand = (effect: string, action: string) => `dbus-send --print-reply --dest=org.kde.KWin /Effects org.kde.kwin.Effects.${action} string:"${effect}"`;
+const runCommand = async (effect: string, action: string) => {
 	const cmd = createCommand(effect, action);
 
 	console.log({ cmd });
@@ -18,14 +20,21 @@ const runCommand = async (effect, action) => {
 };
 
 const DEFAULT_TIMEOUT = 15_000; // TODO change to 5 minutes
+
 const EFFECTS = {
 	"wobbly-windows": "wobblywindows",
 	invert: "invert"
 };
+export type EffectKey = keyof typeof EFFECTS;
 
 const timeouts = new WeakSet();
 
-const execute = async (effectName, actionName, data = {}) => {
+export interface DesktopEffectData {
+	timeout?: number
+	skipTimeout?: boolean
+}
+
+export const execute = async (effectName: keyof typeof EFFECTS, actionName: keyof typeof DBUS_COMMAND, data: DesktopEffectData = {}) => {
 	const effect = EFFECTS[effectName];
 	if (!effect) {
 		return {
@@ -70,6 +79,3 @@ const execute = async (effectName, actionName, data = {}) => {
 	}
 }
 
-module.exports = {
-	execute
-};
