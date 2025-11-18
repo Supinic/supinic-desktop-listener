@@ -13,21 +13,31 @@ interface PlaybackUrl {
 }
 
 export class AudioPlayer {
-	async play(filename: string) {
+	async play (filename: string) {
 		const playsoundPath = path.join(".", "playsounds", filename);
 		try {
+			// const params = [
+			// 	"vlc",
+			// 	// "--audio-filter normvol",
+			// 	// "--norm-max-level=1.500000",
+			// 	"-I dummy",
+			// 	"--no-volume-save",
+			// 	//"--waveout-volume=0.05",
+			// 	//"--waveout-volume=" + volume,
+			// 	"--gain=8",
+			// 	//"--gain=8",
+			// 	"--play-and-exit",
+			// 	"--no-one-instance",
+			// 	playsoundPath
+			// ];
+
 			const params = [
-				"vlc",
-				// "--audio-filter normvol",
-				// "--norm-max-level=1.500000",
-				"-I dummy",
-				"--no-volume-save",
-				//"--waveout-volume=0.05",
-				//"--waveout-volume=" + volume,
-				"--gain=1.5",
-				//"--gain=8",
-				"--play-and-exit",
-				"--no-one-instance",
+				"mpv",
+				"--keep-open=no",
+				"--video=no",
+				`--title="Desktop listener: playsound ${filename}"`,
+				"--volume=75",
+				"--af=lavfi=[loudnorm=I=-27:TP=-4:LRA=4]",
 				playsoundPath
 			];
 
@@ -68,18 +78,14 @@ export class AudioPlayer {
 
 		const stringURLs = list.map(i => `"${i.url}?${i.searchParams}"`).join(" ");
 		const params = [
-			"vlc",
-			// "--audio-filter normvol",
-			// "--norm-max-level=1.500000",
-			"-I dummy",
-			"--no-volume-save",
-			//"--waveout-volume=0.05",
-			//"--waveout-volume=" + volume,
-			"--gain=" + volume,
-			//"--gain=8",
-			"--play-and-exit",
-			"--no-one-instance",
-			stringURLs
+			"mpv",
+			"--keep-open=no",
+			"--video=no",
+			`--title="Desktop listener: special audio"`,
+			"--volume=75",
+			"--af=lavfi=[loudnorm=I=-27:TP=-4:LRA=4]",
+			stringURLs,
+			// "--af=lavfi=[dynaudnorm=f=75:g=25:p=0.55]"
 		];
 
 		console.debug(stringURLs);
