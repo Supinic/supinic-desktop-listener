@@ -37,7 +37,8 @@ export class AudioPlayer {
 				"--video=no",
 				`--title="Desktop listener: playsound ${filename}"`,
 				"--volume=75",
-				"--af=lavfi=[loudnorm=I=-27:TP=-4:LRA=4]",
+				"--af=lavfi=[loudnorm=I=-28:TP=-4:LRA=4]",
+				"--audio-device=pulse/mpv_audio_sink",
 				playsoundPath
 			];
 
@@ -83,7 +84,8 @@ export class AudioPlayer {
 			"--video=no",
 			`--title="Desktop listener: special audio"`,
 			"--volume=75",
-			"--af=lavfi=[loudnorm=I=-27:TP=-4:LRA=4]",
+			"--af=lavfi=[loudnorm=I=-28:TP=-4:LRA=4]",
+			"--audio-device=pulse/mpv_audio_sink",
 			stringURLs,
 			// "--af=lavfi=[dynaudnorm=f=75:g=25:p=0.55]"
 		];
