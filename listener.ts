@@ -1,7 +1,9 @@
 import * as http from "node:http";
 import qs from "node:querystring";
 import url from "node:url";
+
 import { AudioPlayer } from "./audio-module";
+import queryMpv from "./mpv";
 import * as DesktopEffects from "./desktop-effects";
 
 const PORT = 9999;
@@ -64,6 +66,30 @@ const app = http.createServer(async (req, res) => {
 		const effectResult = await DesktopEffects.execute(effect as DesktopEffects.EffectKey, action as DesktopEffects.CommandKey, data as DesktopEffects.DesktopEffectData);
 
 		result = JSON.stringify(effectResult);
+	}
+	else if (typeof parts.query.mpv === "string") {
+		res.setHeader("Content-Type", "application/json");
+
+		try {
+			JSON.parse(parts.query.mpv);
+		}
+		catch (e) {
+			console.warn("Malformed MPV JSON received", e);
+			return res.end(JSON.stringify({
+				error: "malformed JSON received"
+			}));
+		}
+
+		try {
+			result = await queryMpv(parts.query.mpv);
+		}
+		catch (e: unknown) {
+			if (!(e instanceof Error)) {
+				throw new Error(String(e));
+			}
+
+			result = JSON.stringify({ error: e.message, cause: e });
+		}
 	}
 
 	res.end(result);
