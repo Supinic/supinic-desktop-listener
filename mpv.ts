@@ -1,6 +1,6 @@
 import net, { type Socket } from "node:net";
 
-const MPV_SOCKET = "/tmp/mpvsocket";
+const MPV_SOCKET = "/tmp/mpv.sock";
 const MPV_TIMEOUT = 2000;
 const MAX_COUNTER = 2**16 - 1;
 
