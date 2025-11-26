@@ -35,7 +35,6 @@ const prepareSocket = (): Socket => {
     });
 
     client.on("data", (rawData) => {
-        console.log("MPV rawData", rawData);
         const lines = rawData.toString().split("\n");
         for (const line of lines) {
             if (!line) {
@@ -52,13 +51,11 @@ const prepareSocket = (): Socket => {
                 continue;
             }
 
-            console.log("MPV data", data);
             const resolver = pending.get(data.request_id);
             if (!resolver) {
                 continue;
             }
 
-            console.log("MPV resolve");
             resolver.resolve(JSON.stringify(data));
             pending.delete(data.request_id);
 
