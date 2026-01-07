@@ -52,12 +52,9 @@ const recents: string[] = [];
 const library = new Set<string>();
 
 export const get = async () => {
-    console.log("1");
     if (library.size === 0) {
         await walk(config.root, library);
     }
-
-    console.log([...library]);
 
     if (library.size < config.historySize) {
         throw new Error("Library size is lower than repeats");
