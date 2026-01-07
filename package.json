@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Does various stuff in reaction to HTTP requests sent locally. Works mostly with supibot (supinic/supibot) and its LocalRequest module.",
   "main": "listener.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "tsc && node build/listener.js",
@@ -20,11 +21,11 @@
   "homepage": "https://github.com/Supinic/supinic-desktop-listener#readme",
   "dependencies": {
     "get-mp3-duration": "latest",
-    "got": "^10.0.0",
-    "youtube-dl-exec": "^2.1.0"
+    "got": "^14.6.0"
   },
   "packageManager": "yarn@4.3.1",
   "devDependencies": {
+    "@types/node": "^25.0.3",
     "typescript": "^5.5.4"
   }
 }

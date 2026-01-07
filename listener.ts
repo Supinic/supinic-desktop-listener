@@ -2,9 +2,10 @@ import * as http from "node:http";
 import qs from "node:querystring";
 import url from "node:url";
 
-import { AudioPlayer } from "./audio-module";
-import queryMpv from "./mpv";
-import * as DesktopEffects from "./desktop-effects";
+import { AudioPlayer } from "./audio-module.js";
+import { clear as clearAutoplay, get as getAutoplayLink } from "./autoplay/index.js";
+import queryMpv from "./mpv.js";
+import * as DesktopEffects from "./desktop-effects.js";
 
 const PORT = 9999;
 
@@ -89,6 +90,31 @@ const app = http.createServer(async (req, res) => {
 			}
 
 			result = JSON.stringify({ error: e.message, cause: e });
+		}
+	}
+	else if (typeof parts.query.autoplay === "string") {
+		res.setHeader("Content-Type", "application/json");
+
+		const cmd = parts.query.autoplay;
+		if (cmd === "queue") {
+			const link = await getAutoplayLink();
+			try {
+				result = await queryMpv(JSON.stringify(["loadfile", link, "append-play"]));
+			}
+			catch (e: unknown) {
+				if (!(e instanceof Error)) {
+					throw new Error(String(e));
+				}
+
+				result = JSON.stringify({ error: e.message, cause: e });
+			}
+		}
+		else if (cmd === "reset" || cmd === "clear") {
+			clearAutoplay();
+			result = JSON.stringify({ success: true });
+		}
+		else {
+			throw new Error("Unrecognized autoplay command");
 		}
 	}
 
