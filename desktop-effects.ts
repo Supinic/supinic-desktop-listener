@@ -1,5 +1,5 @@
-const { promisify } = require("util");
-const { exec } = require("child_process");
+import { promisify } from "node:util";
+import { exec } from "node:child_process";
 const shell = promisify(exec);
 
 const DBUS_COMMAND = {
