@@ -97,7 +97,7 @@ const app = http.createServer(async (req, res) => {
 
 		const cmd = parts.query.autoplay;
 		if (cmd === "queue") {
-			const link = await getAutoplayLink();
+			const { link } = await getAutoplayLink();
 			try {
 				result = await queryMpv(JSON.stringify(["loadfile", link, "append-play"]));
 			}

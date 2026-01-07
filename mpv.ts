@@ -41,7 +41,6 @@ const prepareSocket = (): Socket => {
                 continue;
             }
 
-            console.log("MPV line", line);
             let data: MpvResponse;
             try {
                 data = JSON.parse(line);
