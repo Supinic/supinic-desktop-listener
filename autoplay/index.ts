@@ -25,12 +25,13 @@ const randomFromSet = <T> (input: Set<T>): T => {
 const walk = async (dir: string, out: Set<string>): Promise<void> => {
     const entries = new Set(await fs.readdir(dir, { withFileTypes: true }));
     for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
-            if (config.exclude.dir.includes(entry.name)) {
+            if (config.exclude.dir.includes(fullPath)) {
                 continue;
             }
 
-            await walk(dir, out);
+            await walk(fullPath, out);
             continue;
         }
         else if (!entry.isFile()) {
@@ -42,7 +43,6 @@ const walk = async (dir: string, out: Set<string>): Promise<void> => {
             continue;
         }
 
-        const fullPath = path.join(dir, entry.name);
         const fullNormalizedPath = path.resolve(fullPath);
         out.add(fullNormalizedPath);
     }
@@ -52,9 +52,12 @@ const recents: string[] = [];
 const library = new Set<string>();
 
 export const get = async () => {
+    console.log("1");
     if (library.size === 0) {
         await walk(config.root, library);
     }
+
+    console.log([...library]);
 
     if (library.size < config.historySize) {
         throw new Error("Library size is lower than repeats");
