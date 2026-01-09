@@ -96,18 +96,9 @@ const app = http.createServer(async (req, res) => {
 		res.setHeader("Content-Type", "application/json");
 
 		const cmd = parts.query.autoplay;
-		if (cmd === "queue") {
+		if (cmd === "random") {
 			const { link } = await getAutoplayLink();
-			try {
-				result = await queryMpv(JSON.stringify(["loadfile", link, "append-play"]));
-			}
-			catch (e: unknown) {
-				if (!(e instanceof Error)) {
-					throw new Error(String(e));
-				}
-
-				result = JSON.stringify({ error: e.message, cause: e });
-			}
+			result = JSON.stringify({ link });
 		}
 		else if (cmd === "reset" || cmd === "clear") {
 			clearAutoplay();
