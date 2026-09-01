@@ -70,8 +70,17 @@ export const get = async () => {
     return {
         link
     };
+};
+
+export const list = async () => {
+	if (library.size === 0) {
+		await walk(config.root, library);
+	}
+
+	const list = [...library].map(i => i.replace(config.root, ""));
+	return { list };
 }
 
 export const clear = () => {
     library.clear();
-}
+};
