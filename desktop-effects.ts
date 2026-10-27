@@ -19,7 +19,7 @@ const runCommand = async (effect: string, action: string) => {
 	return await shell(cmd);
 };
 
-const DEFAULT_TIMEOUT = 15_000; // TODO change to 5 minutes
+const DEFAULT_TIMEOUT = 300_000;
 
 const EFFECTS = {
 	"wobbly-windows": "wobblywindows",
