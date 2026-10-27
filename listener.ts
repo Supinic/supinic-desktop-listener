@@ -64,7 +64,11 @@ const app = http.createServer(async (req, res) => {
 		res.setHeader("Content-Type", "application/json");
 
 		const { action, effect, data } = parts.query;
-		const effectResult = await DesktopEffects.execute(effect as DesktopEffects.EffectKey, action as DesktopEffects.CommandKey, data as DesktopEffects.DesktopEffectData);
+		const effectResult = await DesktopEffects.execute(
+			effect as DesktopEffects.EffectKey,
+			action as DesktopEffects.CommandKey,
+			data as DesktopEffects.DesktopEffectData
+		);
 
 		result = JSON.stringify(effectResult);
 	}
